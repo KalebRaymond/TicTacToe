@@ -1,0 +1,28 @@
+# depslib dependency file v1.0
+1537746018 source:d:\c++ backup\programs\self\tictactoe\boardspace.cpp
+	"boardSpace.h"
+	<iostream>
+	<vector>
+	<utility>
+
+1537746416 d:\c++ backup\programs\self\tictactoe\boardspace.h
+
+1537745009 source:d:\c++ backup\programs\self\tictactoe\helper_functions.cpp
+	"helper_functions.h"
+
+1537745450 d:\c++ backup\programs\self\tictactoe\helper_functions.h
+	"boardSpace.cpp"
+
+1537746416 d:\c++ backup\programs\self\tictactoe\boardspace.cpp
+	"boardSpace.h"
+	<iostream>
+	<vector>
+	<utility>
+
+1537745563 source:d:\c++ backup\programs\self\tictactoe\main.cpp
+	"boardSpace.h"
+	"helper_functions.h"
+
+1537745009 d:\c++ backup\programs\self\tictactoe\helper_functions.cpp
+	"helper_functions.h"
+
