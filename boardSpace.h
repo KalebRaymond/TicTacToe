@@ -1,6 +1,10 @@
 #ifndef BOARDSPACE_H
 #define BOARDSPACE_H
 
+#include <iostream>
+#include <vector>
+#include <utility>
+
 //Class representing a space in the tic tac toe board, for improved readability
 class boardSpace
 {

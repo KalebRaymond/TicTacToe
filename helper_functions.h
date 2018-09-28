@@ -1,7 +1,7 @@
 #ifndef HELPER_FUNCTIONS_H
 #define HELPER_FUNCTIONS_H
 
-#include "boardSpace.cpp"
+#include "boardSpace.h"
 
 char check_win(boardSpace board[3][3]);
 int maximize(boardSpace(*)[3], int, int);

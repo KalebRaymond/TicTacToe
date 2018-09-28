@@ -1,7 +1,5 @@
+
 #include "boardSpace.h"
-#include <iostream>
-#include <vector>
-#include <utility>
 
 bool boardSpace::setChar(char c)
 {

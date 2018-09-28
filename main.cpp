@@ -1,5 +1,6 @@
-#include "boardSpace.h"
 #include "helper_functions.h"
+#include "boardSpace.h"
+#include <iostream>
 
 int main()
 {
