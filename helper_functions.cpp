@@ -75,6 +75,20 @@ char check_win(boardSpace board[3][3])
 //Recursive function intended to return the expected score of putting an X in a given boardSpace
 int maximize(boardSpace board[3][3], int depth, int score)
 {
+    char win_state = check_win(board);
+
+    switch(win_state)
+    {
+        case 'X':
+            score += (10 - depth);
+            return score;
+        case 'O':
+            score -= (10 - depth);
+            return score;
+        case 'D':
+            return 0;
+    }
+
     for(int i = 0; i < 3; ++i)
     {
         for(int j = 0; j < 3; ++j)
@@ -84,30 +98,33 @@ int maximize(boardSpace board[3][3], int depth, int score)
                 board[i][j].setChar('X');
                 board[i][j].setState('P');
 
-                char win_state = check_win(board);
-
-                switch(win_state)
-                {
-                    case 'X':
-                                score += (10 - depth);
-                                return score;
-                    case 'D':
-                                return -1;
-                    default:
-                                //printBoard(board);
-                                minimize(board, depth + 1, score);
-
-                }
+                score = minimize(board, depth + 1, score);
 
                 board[i][j].setChar('-');
             }
         }
     }
+
+    return score;
 }
 
 //Recursive function intended to return the expected score of putting an O in a given boardSpace
 int minimize(boardSpace board[3][3], int depth, int score)
 {
+    char win_state = check_win(board);
+
+    switch(win_state)
+    {
+        case 'X':
+            score += (10 - depth);
+            return score;
+        case 'O':
+            score -= (10 - depth);
+            return score;
+        case 'D':
+            return 0;
+    }
+
     for(int i = 0; i < 3; ++i)
     {
         for(int j = 0; j < 3; ++j)
@@ -117,24 +134,14 @@ int minimize(boardSpace board[3][3], int depth, int score)
                 board[i][j].setChar('O');
                 board[i][j].setState('P');
 
-                char win_state = check_win(board);
-
-                switch(win_state)
-                {
-                    case 'O':
-                                score -= (10 - depth);
-                                return score;
-                    case 'D':
-                                return -1;
-                    default:
-                                //printBoard(board);
-                                maximize(board, depth + 1, score);
-                }
+                score = maximize(board, depth + 1, score);
 
                 board[i][j].setChar('-');
             }
         }
     }
+
+    return score;
 }
 
 //Function intended to determine the best possible move for player O
@@ -156,32 +163,29 @@ int comp_minmax(boardSpace board[3][3], int turn_count, int depth)
         return 0;
     }
 
-    static std::vector< std::pair <char[3][3], int>> game_states;
     int best_move[2];
     int min_score = 0;
-
 
     for(int i = 0; i < 3; ++i)
     {
         for(int j = 0; j < 3; ++j)
         {
-            if(board[i][j].getChar() == '-')
+            if(board[i][j].getChar() == '-' && (turn_count + depth) % 2 == 1)
             {
-                if((turn_count + depth) % 2 == 0)
+                //find move that gives x least points, lose < tie
+                board[i][j].setChar('O');
+                board[i][j].setState('P');
+
+                int move_score = maximize(board,0,0);
+
+                if(move_score < min_score)
                 {
-                    //find move that gives x most points
-                    maximize(board, 0, 0);
-                }
-                else
-                {
-                    //find move that gives x least points, lose < tie
-                    if(minimize(board, 0, 0) < min_score)
-                    {
-                        best_move[0] = i;
-                        best_move[1] = j;
-                    }
+                    min_score = move_score;
+                    best_move[0] = i;
+                    best_move[1] = j;
                 }
 
+                board[i][j].setChar('-');
             }
         }
     }
