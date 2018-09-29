@@ -73,18 +73,19 @@ char check_win(boardSpace board[3][3])
 }
 
 //Recursive function intended to return the expected score of putting an X in a given boardSpace
-int maximize(boardSpace board[3][3], int depth, int score)
+int maximize(boardSpace board[3][3], int depth)
 {
+    std::cout << "max ";
+
+    int score = 0;
     char win_state = check_win(board);
 
     switch(win_state)
     {
         case 'X':
-            score += (10 - depth);
-            return score;
+            return 10 - depth;
         case 'O':
-            score -= (10 - depth);
-            return score;
+            return 10 + depth;
         case 'D':
             return 0;
     }
@@ -98,7 +99,7 @@ int maximize(boardSpace board[3][3], int depth, int score)
                 board[i][j].setChar('X');
                 board[i][j].setState('P');
 
-                score = minimize(board, depth + 1, score);
+                score = minimize(board, depth + 1);
 
                 board[i][j].setChar('-');
             }
@@ -109,18 +110,19 @@ int maximize(boardSpace board[3][3], int depth, int score)
 }
 
 //Recursive function intended to return the expected score of putting an O in a given boardSpace
-int minimize(boardSpace board[3][3], int depth, int score)
+int minimize(boardSpace board[3][3], int depth)
 {
+    std::cout << "min ";
+
+    int score = 0;
     char win_state = check_win(board);
 
     switch(win_state)
     {
         case 'X':
-            score += (10 - depth);
-            return score;
+            return 10 - depth;
         case 'O':
-            score -= (10 - depth);
-            return score;
+            return 10 + depth;
         case 'D':
             return 0;
     }
@@ -134,7 +136,7 @@ int minimize(boardSpace board[3][3], int depth, int score)
                 board[i][j].setChar('O');
                 board[i][j].setState('P');
 
-                score = maximize(board, depth + 1, score);
+                score = maximize(board, depth + 1);
 
                 board[i][j].setChar('-');
             }
@@ -145,21 +147,22 @@ int minimize(boardSpace board[3][3], int depth, int score)
 }
 
 //Function intended to determine the best possible move for player O
-int comp_minmax(boardSpace board[3][3], int turn_count, int depth)
+int comp_minmax(boardSpace board[3][3], int turn_count)
 {
 
     //To save computation time, the best first move is known to either be the corner or the middle if the corner is taken
     if(turn_count == 1)
     {
-        if(board[0][0].getChar() == 'X' || board[0][2].getChar() == 'X' || board[2][0].getChar() == 'X' || board[2][2].getChar() == 'X')
+        if(board[1][1].getChar() == '-')
         {
             board[1][1].setChar('O');
+            board[1][1].setState('F');
         }
         else
         {
             board[0][0].setChar('O');
+            board[0][0].setState('F');
         }
-
         return 0;
     }
 
@@ -170,13 +173,13 @@ int comp_minmax(boardSpace board[3][3], int turn_count, int depth)
     {
         for(int j = 0; j < 3; ++j)
         {
-            if(board[i][j].getChar() == '-' && (turn_count + depth) % 2 == 1)
+            if(board[i][j].getChar() == '-' && turn_count % 2 == 1)
             {
                 //find move that gives x least points, lose < tie
                 board[i][j].setChar('O');
                 board[i][j].setState('P');
 
-                int move_score = maximize(board,0,0);
+                int move_score = maximize(board, 0);
 
                 if(move_score < min_score)
                 {
@@ -187,6 +190,8 @@ int comp_minmax(boardSpace board[3][3], int turn_count, int depth)
 
                 board[i][j].setChar('-');
             }
+
+            ++turn_count;
         }
     }
 

@@ -25,7 +25,7 @@ int main()
         }
         else
         {
-            comp_minmax(tttBoard, turnCount, 1);
+            comp_minmax(tttBoard, turnCount);
         }
 
         winState = check_win(tttBoard);
