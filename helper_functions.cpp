@@ -76,19 +76,18 @@ char check_win(boardSpace board[3][3])
 int maximize(boardSpace board[3][3], int depth)
 {
     //std::cout << "max " << depth << "\n";
-
-    int score = 0;
     char win_state = check_win(board);
-
     switch(win_state)
     {
         case 'X':
             return 10 - depth;
         case 'O':
-            return 10 + depth;
+            return depth - 10;
         case 'D':
             return 0;
     }
+
+    int score = INT_MIN;
 
     for(int i = 0; i < 3; ++i)
     {
@@ -99,7 +98,7 @@ int maximize(boardSpace board[3][3], int depth)
                 board[i][j].setChar('X');
                 board[i][j].setState('P');
 
-                score = minimize(board, depth + 1);
+                score = std::min(score, minimize(board, depth + 1));
 
                 board[i][j].setChar('-');
             }
@@ -113,19 +112,18 @@ int maximize(boardSpace board[3][3], int depth)
 int minimize(boardSpace board[3][3], int depth)
 {
     //std::cout << "min " << depth << "\n";
-
-    int score = 0;
     char win_state = check_win(board);
-
     switch(win_state)
     {
         case 'X':
             return 10 - depth;
         case 'O':
-            return 10 + depth;
+            return depth - 10;
         case 'D':
             return 0;
     }
+
+    int score = INT_MAX;
 
     for(int i = 0; i < 3; ++i)
     {
@@ -136,7 +134,7 @@ int minimize(boardSpace board[3][3], int depth)
                 board[i][j].setChar('O');
                 board[i][j].setState('P');
 
-                score = maximize(board, depth + 1);
+                score = std::max(score, maximize(board, depth + 1));
 
                 board[i][j].setChar('-');
             }
@@ -166,8 +164,8 @@ int comp_minmax(boardSpace board[3][3], int turn_count)
         return 0;
     }
 
-    int best_move[2];
-    int min_score = 0;
+    int best_move[2] = {0, 0};
+    int min_score = INT_MAX;
 
     for(int i = 0; i < 3; ++i)
     {
@@ -181,6 +179,7 @@ int comp_minmax(boardSpace board[3][3], int turn_count)
 
                 int move_score = maximize(board, 0);
 
+                std::cout << move_score << " " << min_score << " | ";
                 if(move_score < min_score)
                 {
                     min_score = move_score;
@@ -195,11 +194,18 @@ int comp_minmax(boardSpace board[3][3], int turn_count)
         }
     }
 
-    std::cout << "wat ";
-    board[best_move[0]][best_move[1]].setChar('O');
-    board[best_move[0]][best_move[1]].setState('F');
+    std::cout << best_move[0] << ", " << best_move[1] << " ";
 
-
+    if(board[best_move[0]][best_move[1]].getChar() != '-')
+    {
+        std::cout << "Something went wrong";
+        return -1;
+    }
+    else
+    {
+        board[best_move[0]][best_move[1]].setChar('O');
+        board[best_move[0]][best_move[1]].setState('F');
+    }
     return 0;
 
 }
@@ -210,7 +216,6 @@ void printBoard(boardSpace board[3][3])
     {
         for(int j = 0; j < 3; ++j)
         {
-            //tttBoard[i][j] = boardSpace();
             std::cout << board[i][j].getChar() << " ";
         }
         std::cout << "\n";
