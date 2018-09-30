@@ -58,6 +58,7 @@ char check_win(boardSpace board[3][3])
         }
     }
 
+    //Check if game isn't over yet
     for(int i = 0; i < 3; ++i)
     {
         for(int j = 0; j < 3; ++j)
@@ -75,7 +76,6 @@ char check_win(boardSpace board[3][3])
 //Recursive function intended to return the expected score of putting an X in a given boardSpace
 int maximize(boardSpace board[3][3], int depth)
 {
-    //std::cout << "max " << depth << "\n";
     char win_state = check_win(board);
     switch(win_state)
     {
@@ -84,7 +84,7 @@ int maximize(boardSpace board[3][3], int depth)
         case 'O':
             return depth - 10;
         case 'D':
-            return 0;
+            return depth;
     }
 
     int score = INT_MIN;
@@ -98,7 +98,7 @@ int maximize(boardSpace board[3][3], int depth)
                 board[i][j].setChar('X');
                 board[i][j].setState('P');
 
-                score = std::min(score, minimize(board, depth + 1));
+                score = std::max(score, minimize(board, depth + 1));
 
                 board[i][j].setChar('-');
             }
@@ -111,7 +111,6 @@ int maximize(boardSpace board[3][3], int depth)
 //Recursive function intended to return the expected score of putting an O in a given boardSpace
 int minimize(boardSpace board[3][3], int depth)
 {
-    //std::cout << "min " << depth << "\n";
     char win_state = check_win(board);
     switch(win_state)
     {
@@ -120,7 +119,7 @@ int minimize(boardSpace board[3][3], int depth)
         case 'O':
             return depth - 10;
         case 'D':
-            return 0;
+            return depth;
     }
 
     int score = INT_MAX;
@@ -134,7 +133,7 @@ int minimize(boardSpace board[3][3], int depth)
                 board[i][j].setChar('O');
                 board[i][j].setState('P');
 
-                score = std::max(score, maximize(board, depth + 1));
+                score = std::min(score, maximize(board, depth + 1));
 
                 board[i][j].setChar('-');
             }
@@ -171,13 +170,12 @@ int comp_minmax(boardSpace board[3][3], int turn_count)
     {
         for(int j = 0; j < 3; ++j)
         {
-            if(board[i][j].getChar() == '-' && turn_count % 2 == 1)
+            if(board[i][j].getChar() == '-')
             {
-                //find move that gives x least points, lose < tie
                 board[i][j].setChar('O');
                 board[i][j].setState('P');
 
-                int move_score = maximize(board, 0);
+                int move_score = maximize(board, 1);
 
                 std::cout << move_score << " " << min_score << " | ";
                 if(move_score < min_score)
@@ -189,8 +187,6 @@ int comp_minmax(boardSpace board[3][3], int turn_count)
 
                 board[i][j].setChar('-');
             }
-
-            ++turn_count;
         }
     }
 

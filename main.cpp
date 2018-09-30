@@ -50,6 +50,17 @@ int main()
     }
 
     printBoard(tttBoard);
-    std::cout << "Player " << winState << " wins";
+    switch(winState)
+    {
+        case 'X':
+        case 'O':
+            std::cout << "Player " << winState << " wins!";
+            break;
+        case 'D':
+            std::cout << "Draw!";
+            break;
+        default:
+            std::cout << "Winstate error.";
+    }
 }
 
